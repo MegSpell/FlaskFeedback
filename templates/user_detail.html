@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}{{ user.username }}’s Profile{% endblock %}
+
+{% block content %}
+  <!-- User Header -->
+  <div class="pt-4">
+    <h2 class="mb-1">{{ user.first_name }} {{ user.last_name }}
+      <small class="text-muted">({{ user.username }})</small>
+    </h2>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="d-flex mb-4">
+    <a href="{{ url_for('show_feedback_form', username=user.username) }}"
+       class="btn btn-success me-2">
+      + Add Feedback
+    </a>
+    <form method="POST"
+          action="{{ url_for('delete_user', username=user.username) }}"
+          onsubmit="return confirm('Are you sure you want to delete your account?');">
+      <button class="btn btn-danger">Delete Account</button>
+    </form>
+  </div>
+
+  <!-- Feedback List -->
+  <h4 class="mb-3">Your Feedback</h4>
+
+  {% if user.feedback %}
+    <ul class="list-group mb-5">
+      {% for fb in user.feedback %}
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div>
+            <h5 class="mb-1">{{ fb.title }}</h5>
+            <p class="mb-0">{{ fb.content }}</p>
+          </div>
+          <div class="d-flex btn-group-sm">
+            <a href="{{ url_for('show_edit_form', feedback_id=fb.id) }}"
+               class="btn btn-primary btn-sm me-2">
+              Edit
+            </a>
+            <form method="POST"
+                  action="{{ url_for('delete_feedback', feedback_id=fb.id) }}"
+                  onsubmit="return confirm('Delete this feedback?');">
+              <button class="btn btn-danger btn-sm">Delete</button>
+            </form>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-secondary">You haven’t left any feedback yet.</p>
+  {% endif %}
+{% endblock %}
